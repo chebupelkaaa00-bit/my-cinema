@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Моя Киноколлекция</title>
+    <!-- Подключаем ваш внешний файл стилей -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+    <!-- БЛОК АВТОРИЗАЦИИ -->
+  <div class="auth-bar" id="auth-panel">
+        <span id="auth-status" style="font-weight: bold;">🔑 Авторизация для теста:</span>
+        <div class="auth-inputs">
+            <input type="text" id="user-login" placeholder="Логин">
+            <input type="password" id="user-pass" placeholder="Пароль">
+            <button class="login-btn" onclick="login()">Войти</button>
+        </div>
+    </div>
+
+    <header>
+        <h1>🍿 Моя Киноколлекция</h1>
+<!-- 1. САМА ПОИСКОВАЯ СТРОКА (HTML) -->
+<div style="max-width: 500px; margin: 25px auto; text-align: center; font-family: sans-serif; position: relative; z-index: 9999;">
+  <input type="text" id="smart-search" placeholder="🔍 Начни вводить название фильма..." 
+         style="width: 90%; padding: 14px 20px; font-size: 16px; border-radius: 25px; border: 2px solid #ff007f; background: #111; color: white; outline: none; box-shadow: 0 0 15px rgba(255, 0, 127, 0.3); transition: 0.3s;">
+  
+  <!-- Всплывающий список результатов -->
+  <div id="search-results-box" style="display: none; position: absolute; top: 55px; left: 5%; width: 90%; background: #1c1c1c; border: 1px solid #ff007f; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.7); max-height: 250px; overflow-y: auto; text-align: left; z-index: 10000;">
+  </div>
+</div>
+
+<!-- 2. ЛОГИКА ПОИСКА (JAVASCRIPT) -->
+<script>
+window.addEventListener('DOMContentLoaded', () => {
+  const searchInput = document.getElementById('smart-search');
+  const resultsBox = document.getElementById('search-results-box');
+
+  const myMovies = [
+    { title: "Ла-Ла Ленд", year: "2016", rating: "⭐ 8.0", genre: "💕 Романтика и Мелодрамы" },
+    { title: "365 дней", year: "2020", rating: "⭐ 4.4", genre: "💕 Романтика и Мелодрамы" },
+    { title: "Реквием по мечте", year: "2000", rating: "⭐ 8.0", genre: "🎭 Драмы" },
+    { title: "Ужасающий", year: "2016", rating: "⭐ 5.7", genre: "🧟 Ужасы и Триллеры" },
+    { title: "Тело Дженнифер", year: "2009", rating: "⭐ 5.6", genre: "🧟 Ужасы и Триллеры" },
+    { title: "Обсессия", year: "2025", rating: "⭐ 7.5", genre: "🧟 Ужасы и Триллеры" },
+    { title: "Крампус", year: "2015", rating: "⭐ 5.9", genre: "🧟 Ужасы и Триллеры" },
+    { title: "Легенда", year: "2015", rating: "⭐ 7.1", genre: "💥 Боевики и Криминал" },
+    { title: "Очень страшное кино", year: "2000", rating: "⭐ 6.3", genre: "🥤 Комедии и Молодежное кино" },
+    { title: "Братц", year: "2007", rating: "⭐ 3.1", genre: "🥤 Комедии и Молодежное кино" },
+    { title: "Один дома", year: "1990", rating: "⭐ 7.7", genre: "🥤 Комедии и Молодежное кино" },
+    { title: "Левша", year: "2015", rating: "⭐ 7.5", genre: "🥊 Спортивные Драмы" }
+  ];
+
+  if (!searchInput || !resultsBox) return;
+
+  searchInput.addEventListener('input', function() {
+    const query = this.value.toLowerCase().trim();
+    resultsBox.innerHTML = '';
+
+    if (query.length === 0) {
+      resultsBox.style.display = 'none';
+      return;
+    }
+
+    const filtered = myMovies.filter(movie => 
+      movie.title.toLowerCase().includes(query) || 
+      movie.genre.toLowerCase().includes(query)
+    );
+
+    if (filtered.length > 0) {
+      filtered.forEach(movie => {
+        const div = document.createElement('div');
+        div.style.padding = '12px 15px';
+        div.style.cursor = 'pointer';
+        div.style.borderBottom = '1px solid #333';
+        div.style.color = '#fff';
+        div.style.transition = '0.2s';
+        div.innerHTML = `<strong style="color: #ff007f;">${movie.title}</strong> (${movie.year}) <span style="float: right; color: #ffca28;">${movie.rating}</span><br><small style="color: #888;">${movie.genre}</small>`;
+        
+        div.addEventListener('mouseenter', () => div.style.background = '#2a2a2a');
+        div.addEventListener('mouseleave', () => div.style.background = 'transparent');
+        
+        div.addEventListener('click', () => {
+          searchInput.value = movie.title;
+          resultsBox.style.display = 'none';
+          
+          const pageElements = document.querySelectorAll('body *');
+          for (let el of pageElements) {
+            if (el.textContent.trim().includes(movie.title) && el.children.length === 0) {
+              el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              el.style.outline = "2px solid #ff007f";
+              setTimeout(() => { el.click(); }, 300);
+              setTimeout(() => { el.style.outline = "none"; }, 2000);
+              break;
+            }
+          }
+        });
+        resultsBox.appendChild(div);
+      });
+      resultsBox.style.display = 'block';
+    } else {
+      resultsBox.innerHTML = '<div style="padding: 15px; color: #888; text-align: center;">Ничего не найдено 🍿</div>';
+      resultsBox.style.display = 'block';
+    }
+  });
+
+  document.addEventListener('click', (e) => {
+    if (e.target !== searchInput && e.target !== resultsBox) {
+      resultsBox.style.display = 'none';
+    }
+  });
+});
+</script>
+    <p>Нажмите на фильм, чтобы открыть постер и полное описание!</p>
+    </header>
+
+    <!-- 💕 РОМАНТИКА -->
+       <section class="genre-section">
+        <div class="genre-title">💕 Романтика и Мелодрамы</div>
+        <div class="movie-grid">
+
+            <div class="movie-card" onclick="showMovie('Ла-Ла Ленд', 'Год: 2016 | Жанр: Мюзикл, Романтика | ⭐ 8.0', 'История любви начинающей актрисы Мии и джазового музыканта Себастьяна в Лос-Анджелесе.', 'https://picsum.photos')">
+                <img src="https://avatars.mds.yandex.net/i?id=afd1983e8c7866648146db358d33f41ef98cb01a-5354310-images-thumbs&n=13" class="card-img" alt="Ла-Ла Ленд">
+                <div class="card-info">
+                    <div class="movie-title">Ла-Ла Ленд</div>
+                    <div class="movie-meta">2016 <span class="rating">⭐ 8.0</span></div>
+                </div>
+            </div>
+
+            <div class="movie-card" onclick="showMovie('365 дней', 'Год: 2020 | Жанр: Мелодрама, Эротика | ⭐ 4.4', 'Лауру похищает босс сицилийской мафии Массимо. Он даёт девушке ровно 365 дней, чтобы она искренне полюбила его.', 'https://picsum.photos')">
+                <img src="https://mediaproxy.tvtropes.org/width/1200/https://static.tvtropes.org/pmwiki/pub/images/365_days.png" class="card-img" alt="365 дней">
+                <div class="card-info">
+                    <div class="movie-title">365 дней</div>
+                    <div class="movie-meta">2020 <span class="rating">⭐ 4.4</span></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 🎭 ДРАМЫ -->
+    <section class="genre-section">
+        <div class="genre-title">🎭 Драмы</div>
+        <div class="movie-grid">
+
+            <div class="movie-card" onclick="showMovie('Реквием по мечте', 'Год: 2000 | Жанр: Драма | ⭐ 8.0', 'Тяжелая культовая драма о том, как пагубные зависимости и погоня за иллюзорными мечтами безжалостно разрушают человеческие жизни.', 'https://picsum.photos')">
+                <img src="https://avatars.mds.yandex.net/i?id=027bafe9ff78acdbdf913d62d3c90200f88d9e3b-10675382-images-thumbs&n=13" class="card-img" alt="Реквием по мечте">
+                <div class="card-info">
+                    <div class="movie-title">Реквием по мечте</div>
+                    <div class="movie-meta">2000 <span class="rating">⭐ 8.0</span></div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- 🧟 УЖАСЫ И ТРИЛЛЕРЫ -->
+    <section class="genre-section">
+        <div class="genre-title">🧟 Ужасы и Триллеры</div>
+        <div class="movie-grid">
+
+            <div class="movie-card" onclick="showMovie('Ужасающий', 'Год: 2016 | Жанр: Слэшер, Ужасы | ⭐ 5.7', 'Кровавая история о безмолвном и крайне жестоком маньяке в костюме клоуна по имени Арт, который терроризирует город в ночь на Хэллоуин.', 'https://picsum.photos')">
+                <img src="https://avatars.mds.yandex.net/i?id=a3f80a7a23a81c53b351cab1ade38e1a31bd7b0f-5235559-images-thumbs&n=13" class="card-img" alt="Ужасающий">
+                <div class="card-info">
+                    <div class="movie-title">Ужасающий</div>
+                    <div class="movie-meta">2016 <span class="rating">⭐ 5.7</span></div>
+                </div>
+            </div>
+
+            <div class="movie-card" onclick="showMovie('Тело Дженнифер', 'Год: 2009 | Жанр: Хоррор, Черный юмор | ⭐ 5.6', 'В популярную чирлидершу вселяется прожорливый демон после ритуала. Она начинает охоту на парней, а спасти школу пытается её скромная подруга.', 'https://picsum.photos')">
+                <img src="https://avatars.mds.yandex.net/i?id=21a8f504633d5dfa055e80bc074712e6a2458925-5348787-images-thumbs&n=13" class="card-img" alt="Тело Дженнифер">
+                <div class="card-info">
+                    <div class="movie-title">Тело Дженнифер</div>
+                    <div class="movie-meta">2009 <span class="rating">⭐ 5.6</span></div>
+                </div>
+            </div>
+
+            <div class="movie-card" onclick="showMovie('Обсессия', 'Год: 2025 | Жанр: Хоррор, Сатира | ⭐ 7.5', 'Парень ломает магическую палочку, чтобы коллега безумно влюбилась в него. Желание исполняется, но её чувства перерастают в пугающее безумие.', 'https://picsum.photos')">
+                <img src="https://avatars.mds.yandex.net/i?id=f9e414b9dcd9c3e99e60fcf9180b24982b4699e2-5241728-images-thumbs&n=13" class="card-img" alt="Обсессия">
+                <div class="card-info">
+                    <div class="movie-title">Обсессия</div>
+                    <div class="movie-meta">2025 <span class="rating">⭐ 7.5</span></div>
+                </div>
+            </div>
+
+            <div class="movie-card" onclick="showMovie('Крампус', 'Год: 2015 | Жанр: Ужасы, Фэнтези | ⭐ 5.9', 'Древний рождественский демон Крампус приходит устроить кошмар для семьи, которая потеряла праздничный дух Нового года.', 'https://picsum.photos')">
+                <img src="https://avatars.mds.yandex.net/i?id=6c024369a41f77493a859e399ccb92170fd56c6f-5545648-images-thumbs&n=13" class="card-img" alt="Крампус">
+                <div class="card-info">
+                    <div class="movie-title">Крампус</div>
+                    <div class="movie-meta">2015 <span class="rating">⭐ 5.9</span></div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- 💥 КРИМИНАЛ -->
+    <section class="genre-section">
+        <div class="genre-title">💥 Боевики и Криминал</div>
+        <div class="movie-grid">
+
+            <div class="movie-card" onclick="showMovie('Легенда', 'Год: 2015 | Жанр: Криминал, Биография | ⭐ 7.1', 'История взлёта и падения знаменитых британских гангстеров — близнецов Рональда и Реджи Крэй, заправлявших всем криминальным миром Лондона 1960-х.', 'https://picsum.photos')">
+                <img src="https://avatars.mds.yandex.net/i?id=d78540942c170ee9087d2daf836bf730ae9dacf4-5234009-images-thumbs&n=13" class="card-img" alt="Легенда">
+                <div class="card-info">
+                    <div class="movie-title">Легенда</div>
+                    <div class="movie-meta">2015 <span class="rating">⭐ 7.1</span></div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- 🥤 КОМЕДИИ -->
+    <section class="genre-section">
+        <div class="genre-title">🥤 Комедии и Молодежное кино</div>
+        <div class="movie-grid">
+
+            <div class="movie-card" onclick="showMovie('Очень страшное кино', 'Год: 2000 | Жанр: Черная комедия, Пародия | ⭐ 6.3', 'Культовая безумная пародия на знаменитые американские ужастики и триллеры девяностых вроде фильмов «Крик».', 'https://picsum.photos')">
+                <img src="https://avatars.mds.yandex.net/i?id=11463f53a3a8822bffb2ae44a6a9d5e0ffd11521-5236263-images-thumbs&n=13" class="card-img" alt="Очень страшное кино">
+                <div class="card-info">
+                    <div class="movie-title">Очень страшное кино</div>
+                    <div class="movie-meta">2000 <span class="rating">⭐ 6.3</span></div>
+                </div>
+            </div>
+
+            <div class="movie-card" onclick="showMovie('Братц', 'Год: 2007 | Жанр: Подростковый, Семейный | ⭐ 3.1', 'Кинофильм про четырёх неразлучных подруг, которые переходят в старшие классы и пытаются противостоять школьному разделению.', 'https://picsum.photos')">
+                <img src="https://avatars.mds.yandex.net/i?id=8c6dda45337adb6dced776a626246fa0610f8d20-5231722-images-thumbs&n=13" class="card-img" alt="Братц">
+                <div class="card-info">
+                    <div class="movie-title">Братц</div>
+                    <div class="movie-meta">2007 <span class="rating">⭐ 3.1</span></div>
+                </div>
+            </div>
+
+            <div class="movie-card" onclick="showMovie('Один дома', 'Год: 1990 | Жанр: Семейная комедия | ⭐ 7.7', 'Маленького Кевина случайно забывают дома на рождественские каникулы. Мальчику приходится в одиночку защищать дом от пары глуповатых воришек.', 'https://picsum.photos')">
+                <img src="https://avatars.mds.yandex.net/i?id=04135c5675c99528371468b4cc61ce650805b18e-10090172-images-thumbs&n=13" class="card-img" alt="Один дома">
+                <div class="card-info">
+                    <div class="movie-title">Один дома</div>
+                    <div class="movie-meta">1990 <span class="rating">⭐ 7.7</span></div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- 🥊 СПОРТ -->
+    <section class="genre-section">
+        <div class="genre-title">🥊 Спортивные Драмы</div>
+        <div class="movie-grid">
+
+            <div class="movie-card" onclick="showMovie('Левша', 'Год: 2015 | Жанр: Спорт, Драма | ⭐ 7.5', 'Из-за трагедии знаменитый боксёр теряет жену, карьеру и опеку над дочерью. Чтобы вернуть жизнь в русло, ему предстоит начать всё с самого низа.', 'https://picsum.photos')">
+                <img src="https://avatars.mds.yandex.net/i?id=8312561b4f4217793719b776a245ca0544405a12-5888061-images-thumbs&n=13" class="card-img" alt="Левша">
+                <div class="card-info">
+                    <div class="movie-title">Левша</div>
+                    <div class="movie-meta">2015 <span class="rating">⭐ 7.5</span></div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+</div>
+
+<!-- Модальное окно для описания -->
+<dialog id="movieDialog">
+    <img id="mPoster" class="modal-poster" src="" alt="Обложка">
+    <div id="mTitle" class="modal-title">Название</div>
+    <div id="mMeta" class="modal-meta">Инфо</div>
+    <div id="mDesc" class="modal-desc">Описание</div>
+    <button class="close-btn" onclick="document.getElementById('movieDialog').close()">Закрыть</button>
+</dialog>
+
+<script>
+    const dialog = document.getElementById('movieDialog');
+    function showMovie(title, meta, desc, imgUrl) {
+        document.getElementById('mPoster').src = imgUrl;
+        document.getElementById('mTitle').innerText = title;
+        document.getElementById('mMeta').innerText = meta;
+        document.getElementById('mDesc').innerText = desc;
+        dialog.showModal(); 
+    }
+</script>
+
+<div class="container">
+    <header>
+        <h1>🧠 Быстрый Кино-Тест</h1>
+        <p>Ответь на 5 вопросов, чтобы узнать свой идеальный фильм на вечер!</p>
+    </header>
+
+    <section class="quiz-section">
+        
+        <!-- Вопрос 1 -->
+        <div class="question-block">
+            <p>1. Твой идеальный вечер выходного дня — это...</p>
+            <div class="options-list">
+                <label><input type="radio" name="q1" value="A"> Закутаться в плед с чашкой какао</label>
+                <label><input type="radio" name="q1" value="B"> Порассуждать на сложные психологические темы</label>
+                <label><input type="radio" name="q1" value="C"> Пощекотать нервы чем-то жутким или экстремальным</label>
+                <label><input type="radio" name="q1" value="D"> Повеселиться, посмотреть мемы или комедии</label>
+            </div>
+        </div>
+
+        <!-- Вопрос 2 -->
+        <div class="question-block">
+            <p>2. Какой цвет лучше всего описывает твое настроение сейчас?</p>
+            <div class="options-list">
+                <label><input type="radio" name="q2" value="A"> Нежно-розовый или пастельный</label>
+                <label><input type="radio" name="q2" value="B"> Глубокий синий или стальной серый</label>
+                <label><input type="radio" name="q2" value="C"> Мрачно-черный или кроваво-красный</label>
+                <label><input type="radio" name="q2" value="D"> Солнечно-желтый или яркий оранжевый</label>
+            </div>
+        </div>
+
+        <!-- Вопрос 3 -->
+        <div class="question-block">
+            <p>3. Какая суперспособность тебе ближе всего?</p>
+            <div class="options-list">
+                <label><input type="radio" name="q3" value="A"> Исцелять разбитые сердца и дарить любовь</label>
+                <label><input type="radio" name="q3" value="B"> Читать мысли окружающих и видеть их насквозь</label>
+                <label><input type="radio" name="q3" value="C"> Становиться невидимым(ой) в полной темноте</label>
+                <label><input type="radio" name="q3" value="D"> Уметь рассмешить абсолютно каждого человека</label>
+            </div>
+        </div>
+
+        <!-- Вопрос 4 -->
+        <div class="question-block">
+            <p>4. Выбери идеальное место для жизни:</p>
+            <div class="options-list">
+                <label><input type="radio" name="q4" value="A"> Уютный домик у озера с красивым закатом</label>
+                <label><input type="radio" name="q4" value="B"> Огромный технологичный пентхаус в мегаполисе</label>
+                <label><input type="radio" name="q4" value="C"> Старинный заброшенный замок на холме</label>
+                <label><input type="radio" name="q4" value="D"> Вилла на курорте, где вечеринки круглый год</label>
+            </div>
+        </div>
+
+        <!-- Вопрос 5 -->
+        <div class="question-block">
+            <p>5. Чего тебе сейчас больше всего не хватает в жизни?</p>
+            <div class="options-list">
+                <label><input type="radio" name="q5" value="A"> Нежности, тепла и капельки романтики</label>
+                <label><input type="radio" name="q5" value="B"> Мотивации, внутренней силы или крутого вызова</label>
+                <label><input type="radio" name="q5" value="C"> Бешеного адреналина и острых ощущений</label>
+                <label><input type="radio" name="q5" value="D"> Хорошего отдыха и беззаботного смеха</label>
+            </div>
+        </div>
+
+        <button class="quiz-btn" onclick="calculateResult()">Узнать свой фильм</button>
+        
+        <div id="quiz-result">
+            <div id="result-title"></div>
+            <div id="result-text"></div>
+        </div>
+    </section>
+</div>
+
+<script>
+// Статус входа пользователя
+    let isUserLoggedIn = false;
+
+    function login() {
+        var loginVal = document.getElementById('user-login').value;
+        var passVal = document.getElementById('user-pass').value;
+
+        if (loginVal.trim() !== "" && passVal.trim() !== "") {
+            isUserLoggedIn = true;
+            document.getElementById('auth-panel').innerHTML = `<span style="color: #4caf50; font-weight: bold;">👋 Привет, ${loginVal}! Доступ к результатам открыт.</span>`;
+        } else {
+            alert("Пожалуйста, заполните логин и пароль!");
+        }
+    }
+
+    function calculateResult() {
+        // Проверяем авторизацию
+        if (isUserLoggedIn === false) {
+            alert("🔒 Доступ ограничен! Чтобы узнать результат, введите любые данные в поля авторизации сверху и нажмите кнопку 'Войти'.");
+            return;
+        }
+
+        let counts = { A: 0, B: 0, C: 0, D: 0 };
+        const totalQuestions = 5;
+
+        for (let i = 1; i <= totalQuestions; i++) {
+     const checked = document.querySelector(`input[name="q${i}"]:checked`);
+            if (!checked) {
+                alert("Пожалуйста, ответь на все 5 вопросов перед получением результата!");
+                return;
+            }
+            counts[checked.value]++;
+        }
+
+        let maxLetter = 'A';
+        let maxCount = counts.A;
+
+        for (let letter in counts) {
+            if (counts[letter] > maxCount) {
+                maxCount = counts[letter];
+                maxLetter = letter;
+            }
+        }
+
+
+        let title = "";
+        let text = "";
+
+        if (maxLetter === 'A') {
+            title = "❤️ Ты — Романтик!";
+            text = "Твоя душа требует тепла, искренних чувств и нежности. Тебе идеально подходят трогательные истории о любви, где чувства проходят сквозь любые преграды. Твой выбор на вечер: <b>«Ла-Ла Ленд»</b> или <b>«365 дней»</b>.";
+        } else if (maxLetter === 'B') {
+            title = "🥊 Ты — Борец с сильным характером!";
+            text = "Ты глубокий, сильный и думающий человек. Ты любишь копаться в психологии и ценишь сложные вызовы. Твой характер отлично отражают напряженные драмы. Твой идеальный фильм: <b>«Бойцовский клуб»</b>, <b>«Левша»</b> или драма <b>«Реквием по мечте»</b>.";
+        } else if (maxLetter === 'C') {
+            title = "💀 Ты — Искатель адреналина!";
+            text = "Тебя сложно напугать, а обычная рутина наводит тоску. Ты любишь темную эстетику, мрачные тайны и острые ощущения, от которых стынет кровь. Твой фильм на вечер: <b>«Ужасающий»</b>, <b>«Тело Дженнифер»</b> или хоррор <b>«Обсессия»</b>.";
+        } else if (maxLetter === 'D') {
+            title = "🍿 Ты — Душа компании и Оптимист!";
+            text = "Ты любишь легкость, веселье и беззаботную атмосферу. Жизнь слишком коротка, чтобы грустить! Тебе идеально подходят задорные комедии, способные поднять настроение. Твой идеальный выбор: <b>«Очень страшное кино»</b>, <b>«Один дома»</b> или <b>«Братц»</b>.";
+        }
+
+        const resultBlock = document.getElementById('quiz-result');
+        document.getElementById('result-title').innerText = title;
+        document.getElementById('result-text').innerHTML = text;
+        
+        resultBlock.style.display = 'block';
+        resultBlock.scrollIntoView({ behavior: 'smooth' });
+    }
+</script>
+<!-- ОДИН БЛОК: КНОПКА, МОДАЛЬНОЕ ОКНО И ВСЯ ЛОГИКА -->
+<div style="text-align: center; margin: 20px 0; position: relative; z-index: 99999;">
+  <button id="random-film-btn" style="padding: 12px 24px; font-size: 16px; font-weight: bold; border-radius: 20px; cursor: pointer; background: linear-gradient(45deg, #ff007f, #7928ca); color: white; border: none; box-shadow: 0 4px 15px rgba(255,0,127,0.3); position: relative; z-index: 99999; pointer-events: auto;">
+    🎲 Мне повезёт! (Случайный фильм)
+  </button>
+</div>
+
+<!-- Наше собственное всплывающее окно для случайного фильма -->
+<div id="random-movie-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 100000; justify-content: center; align-items: center; font-family: sans-serif;">
+  <div style="background: #222; color: #fff; padding: 30px; border-radius: 15px; max-width: 400px; width: 90%; text-align: center; box-shadow: 0 0 20px rgba(255,0,127,0.5); border: 1px solid #ff007f;">
+    <h2 style="margin-top: 0; color: #ff007f;">Твой фильм на вечер:</h2>
+    <h1 id="random-movie-title" style="font-size: 28px; margin: 20px 0;">Название фильма</h1>
+    <button id="close-random-modal" style="padding: 10px 20px; background: #444; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">Закрыть</button>
+  </div>
+</div>
+
+<script>
+// Ждем полной загрузки страницы, чтобы скрипт точно увидел кнопку
+window.addEventListener('DOMContentLoaded', () => {
+  const btn = document.getElementById('random-film-btn');
+  const modal = document.getElementById('random-movie-modal');
+  const titleField = document.getElementById('random-movie-title');
+  const closeBtn = document.getElementById('close-random-modal');
+
+  // Список твоих фильмов с сайта
+  const movies = [
+    "Ла-Ла Ленд", "365 дней", "Реквием по мечте", "Ужасающий", 
+    "Тело Дженнифер", "Обсессия", "Крампус", "Легенда", 
+    "Очень страшное кино", "Братц", "Один дома", "Левша"
+  ];
+
+  if (btn) {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation(); // Защита от перекрытия другими скриптами
+      
+      // Выбираем случайный фильм
+      const randomMovie = movies[Math.floor(Math.random() * movies.length)];
+      
+      // Записываем название в модалку и показываем её
+      titleField.textContent = randomMovie;
+      modal.style.display = "flex";
+    });
+  }
+
+  // Закрытие окна
+  if (closeBtn) {
+    closeBtn.addEventListener('click', () => {
+      modal.style.display = "none";
+    });
+  }
+});
+</script>
+<!-- КНОПКА НАВЕРХ -->
+<button id="to-top-btn" title="Наверх" 
+        style="display: none; position: fixed; bottom: 30px; right: 30px; z-index: 99; width: 50px; height: 50px; font-size: 24px; border: none; outline: none; background: linear-gradient(45deg, #ff007f, #7928ca); color: white; cursor: pointer; border-radius: 50px; box-shadow: 0 4px 15px rgba(255,0,127,0.4); transition: 0.3s; transform: scale(1);">
+  🍿
+</button>
+
+<script>
+window.addEventListener('DOMContentLoaded', () => {
+  const toTopBtn = document.getElementById('to-top-btn');
+
+  // Показывать кнопку только если прокрутили страницу вниз на 300 пикселей
+  window.onscroll = function() {
+    if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+      toTopBtn.style.display = "block";
+    } else {
+      toTopBtn.style.display = "none";
+    }
+  };
+
+  // При клике плавно возвращаем наверх
+  toTopBtn.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  // Эффект увеличения при наведении
+  toTopBtn.addEventListener('mouseenter', () => toTopBtn.style.transform = "scale(1.1)");
+  toTopBtn.addEventListener('mouseleave', () => toTopBtn.style.transform = "scale(1)");
+});
+</script>
+    </script>
+</body>
+</html>

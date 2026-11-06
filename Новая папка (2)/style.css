@@ -1,0 +1,253 @@
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background-color: #120c14; /* Темный фон с легким розовым оттенком */
+    color: #ffffff;
+    padding: 30px;
+}
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+header {
+    text-align: center;
+    padding: 30px;
+    background: linear-gradient(135deg, #ff69b4, #b01e6a); /* Красивый розовый градиент */
+    border-radius: 12px;
+    margin-bottom: 40px;
+    box-shadow: 0 4px 20px rgba(255, 105, 180, 0.3);
+}
+header h1 { 
+    font-size: 2.5rem; 
+    text-transform: uppercase; 
+    letter-spacing: 1px;
+}
+header p {
+    font-size: 1.1rem;
+    opacity: 0.95;
+    margin-top: 5px;
+}
+
+.genre-section {
+    margin-bottom: 40px;
+}
+.genre-title {
+    font-size: 1.8rem;
+    color: #ff69b4; 
+    border-bottom: 2px solid #333;
+    padding-bottom: 8px;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Сетка для карточек */
+.movie-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 25px;
+}
+
+/* Карточка фильма */
+.movie-card {
+    background-color: #1f1422;
+    border-radius: 10px;
+    border: 1px solid #3a2233;
+    cursor: pointer;
+    transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    height: 400px;
+}
+.movie-card:hover {
+    transform: translateY(-5px);
+    border-color: #ff69b4;
+    box-shadow: 0 5px 20px rgba(255, 105, 180, 0.5);
+}
+
+.card-img {
+    width: 100%;
+    height: 75%;
+    object-fit: cover;
+    border-bottom: 1px solid #3a2233;
+}
+
+.card-info {
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 25%;
+}
+.movie-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    line-height: 1.2;
+    color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.movie-meta {
+    font-size: 0.95rem;
+    color: #ccaec5;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.rating {
+    color: #ffc107;
+    font-weight: bold;
+}
+
+.quiz-section {
+    background-color: #1f1422;
+    border: 1px solid #3a2233;
+    border-radius: 12px;
+    padding: 30px;
+    margin-top: 50px;
+    margin-bottom: 30px;
+}
+
+.question-block {
+    margin-bottom: 30px;
+    background: #241926;
+    padding: 20px;
+    border-radius: 8px;
+    border-left: 5px solid #ff69b4;
+}
+
+.question-block p {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: #ffffff;
+}
+
+/* Исправленный список — строго сверху вниз */
+.options-list {
+    display: flex;
+    flex-direction: column; /* Заставляет блоки встать в столбик */
+    gap: 12px;
+    width: 100%;
+}
+
+.options-list label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    padding: 12px;
+    border-radius: 6px;
+    background-color: #120c14;
+    border: 1px solid #3a2233;
+    transition: background 0.2s, border-color 0.2s;
+    color: #ddd;
+    width: 100%; /* Занимает всю ширину блока */
+}
+
+.options-list label:hover {
+    background: #2f1b34;
+    border-color: #ff69b4;
+    color: #fff;
+}
+
+.options-list input[type="radio"] {
+    width: 19px;
+    height: 19px;
+    accent-color: #ff69b4; /* Делает кружочки выбора розовыми */
+    cursor: pointer;
+    flex-shrink: 0; /* Не дает кружочку сжиматься */
+}
+
+.quiz-btn {
+    width: 100%;
+    background-color: #ff69b4;
+    color: white;
+    border: none;
+    padding: 15px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1.1rem;
+    transition: background-color 0.2s;
+    text-transform: uppercase;
+}
+.quiz-btn:hover {
+    background-color: #b01e6a;
+}
+
+#quiz-result {
+    margin-top: 25px;
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #ffc107;
+    text-align: center;
+}
+
+/* Модальное окно */
+dialog {
+    background-color: #241926;
+    color: white;
+    border: 1px solid #54334c;
+    border-radius: 12px;
+    padding: 25px;
+    max-width: 550px;
+    width: 90%;
+    margin: auto;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+}
+dialog::backdrop {
+    background-color: rgba(18, 12, 20, 0.9);
+    backdrop-filter: blur(5px);
+}
+.modal-poster {
+    width: 100%;
+    height: 450px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    border: 1px solid #54334c;
+}
+.modal-title {
+    font-size: 1.8rem;
+    color: #ff69b4;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+.modal-meta {
+    font-size: 1rem;
+    color: #ccaec5;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #3a2233;
+    padding-bottom: 8px;
+}
+.modal-desc {
+    font-size: 1.05rem;
+    line-height: 1.6;
+    color: #e6dae2;
+    margin-bottom: 20px;
+}
+.close-btn {
+    background-color: #ff69b4;
+    color: white;
+    border: none;
+    padding: 10px 30px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1rem;
+    float: right;
+}
+.close-btn:hover { 
+    background-color: #b01e6a;
+}
+
+
+
