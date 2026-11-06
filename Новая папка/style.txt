@@ -1,0 +1,32 @@
+body {
+    background-color: #FFF0F5; /* Светло-розовый фон сайта */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333333;
+}
+
+header {
+    background-color: #E0218A; /* Фирменный ярко-розовый Barbie */
+    padding: 20px;
+    text-align: center;
+}
+
+header h1 a {
+    color: #FFFFFF;
+    text-decoration: none;
+    font-size: 32px;
+}
+
+.content {
+    max-width: 1000px;
+    margin: 30px auto;
+    padding: 20px;
+    background: #FFFFFF;
+    border-radius: 8px;
+}
+
+footer {
+    text-align: center;
+    padding: 20px;
+    font-size: 14px;
+    color: #666;
+}
