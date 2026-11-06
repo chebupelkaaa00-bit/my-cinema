@@ -505,40 +505,6 @@ window.addEventListener('DOMContentLoaded', () => {
   toTopBtn.addEventListener('mouseleave', () => toTopBtn.style.transform = "scale(1)");
 });
 </script>
-/* Стили для мобильных телефонов */
-@media (max-width: 768px) {
-  
-  /* Контейнер теперь занимает всю ширину экрана с небольшими отступами */
-  .container {
-    width: 100%;
-    padding: 10px;
-    box-sizing: border-box;
-  }
-
-  /* Панель авторизации перестраивается в один вертикальный столбец */
-  .auth-bar {
-    flex-direction: column;
-    align-items: center;
-    gap: 15px;
-    text-align: center;
-  }
-
-  /* Внутри блока инпуты и кнопка встают друг под другом */
-  .auth-inputs {
-    flex-direction: column;
-    width: 100%;
-    gap: 10px;
-  }
-
-  /* Поля ввода и кнопка становятся широкими и удобными для нажатия пальцем */
-  .auth-inputs input, 
-  .login-btn {
-    width: 100%;
-    height: 44px; /* Удобный размер для тапа на телефоне */
-    box-sizing: border-box;
-         }
-    }
-}
-
-
-
+    </script>
+</body>
+</html>
